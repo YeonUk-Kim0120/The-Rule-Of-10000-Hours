@@ -1,0 +1,126 @@
+import time
+
+#함수 시작
+def start():
+    global start_time
+    global stop_time
+    global accumulate
+
+    start_time = time.time() 
+    print("스톱워치를 시작합니다.")
+    print("스톱워치를 중지 하시려면 \"stop\"을 입력해주세요." )
+
+    while True:
+        order = input()
+        if order == "stop":
+            stop_time = time.time()
+            stop()
+            break
+        else:
+            print("잘못입력하셨습니다. 다시 입력해주세요.")
+
+
+def stop():
+    global stop_time
+    global start_time
+    global accumulate
+
+    runningtime = int(accumulate + stop_time - start_time)
+    hour = runningtime//3600
+    minute = str((runningtime - (3600*hour)) // 60).zfill(2)
+    second = str(runningtime % 60).zfill(2)
+    hour = str(hour).zfill(2)
+    
+    Runningtime = hour+":"+minute+":"+ second
+
+    print("############################################")
+    print(Runningtime, "만큼 지났습니다")
+    print("############################################")
+    print("계속하시려면 \"continue\"를 입력해주세요")
+    print("저장 하시려면 \"save\"을 입력해주세요.")
+    print("초기화 하시려면 \"reset\"를 입력해주세요.")
+    print("############################################")
+    
+    while True:
+        order = input()
+        if order == "continue":
+            accumulate = runningtime
+            start()
+            break
+        elif order == "save":
+            f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\timerecord.txt", 'a')
+            f.write(Today)
+            f.write("-")
+            f.write(Runningtime)
+            f.write("\n")
+            f.close()           
+
+            f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'r')
+            Sum = f.readlines()[-1]
+            f.close()
+
+            NewSum = str(int(Sum) + int(runningtime))
+            f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'a')
+            f.write("\n")
+            f.write(NewSum)
+            f.close()
+
+            print("기록을 파일에 저장하였습니다")
+            break
+
+        elif order == "reset":
+            break
+        else:
+            print("잘못입력하셨습니다. 다시 입력해주세요.")
+
+def record():
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\timerecord.txt", 'r')
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        print(line)
+    f.close()
+
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'r')
+    total = f.readlines()[-1]
+    total = int(total)
+    f.close()
+    
+    hour = total//3600
+    minute =str((total - (3600*hour)) // 60).zfill(2)
+    second = str(total % 60).zfill(2)
+    hour = str(hour).zfill(2)
+    
+    Total = hour+":"+minute+":"+ second
+    print("총", Total, "시간이 흘렀습니다.")
+    #print("1만 시간까지", , "남았습니다.")
+
+
+#환영 인사 및 메뉴얼 소개
+Today = time.strftime('%Y/%m/%d', time.localtime(time.time()))
+print("############################################")
+print("오늘은", Today, "입니다.")
+print("1만 시간을 위해 오늘도 열심히 하세요~!")
+
+#프로그램 시작
+while True:
+    start_time = 0
+    stop_time = 0
+    accumulate = 0
+    
+    print("############################################")
+    print("\"start\" : 스톱워치 시작")
+    print("\"record\" : 기록보기")
+    print("\"exit\": 프로그램 종료")
+    print("############################################")
+
+    order = input()
+    if order == "start":
+        start()
+    elif order == "record":
+        record()
+    elif order == "exit":
+        exit()
+    else:
+        print("잘못입력하셨습니다. 다시 입력해주세요.")
