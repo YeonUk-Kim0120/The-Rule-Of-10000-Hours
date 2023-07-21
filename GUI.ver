@@ -1,0 +1,183 @@
+import tkinter as tk
+import time
+
+def Counting_Up():
+    global runningtime
+    global running
+    global Runningtime
+
+    if running == 1:
+        runningtime += 1
+        hour = runningtime//3600
+        minute = (runningtime - (3600*hour)) // 60
+        second = runningtime % 60
+        Runningtime = str(hour).zfill(2)+":"+str(minute).zfill(2)+":"+str(second).zfill(2)
+        timer.config(text = Runningtime)
+        window.after(1000, Counting_Up)
+
+def Action():
+    global action
+    global running
+    global record
+
+    if action == 'start':
+        action = 'stop'
+        action_button.config(text = action)
+        running = 1
+        Counting_Up()
+    elif action == 'stop':
+        action = 'restart'
+        action_button.config(text = action)
+        record = "save"
+        record_button.config(text = record)
+        running = 0
+    else:
+        action = 'stop'
+        action_button.config(text = action)
+        running = 1
+        Counting_Up()
+
+def Initial():
+    global running
+    global runningtime
+    global action
+    global record
+
+    running = 0
+    runningtime = 0
+    timer.config(text ="00:00:00")
+    action = 'start'
+    action_button.config(text = action)
+    record = "record"
+    record_button.config(text = record)
+
+def Record():
+    global record
+    
+    if record == "record":
+        Rec()
+        
+    elif record == "save":
+        Save()
+
+def Rec():
+    recwin = tk.Tk()
+    recwin.title("RECORDING")
+    recwin.geometry("500x300+1190+10")
+    recwin.config(bg = 'light cyan')
+    recwin.resizable(False, False)
+
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'r')
+    Sum = f.readlines()[-1]
+    f.close()
+
+    Sum = int(Sum)
+    hour = Sum//3600
+    minute = (Sum - (3600*hour)) // 60
+    second = Sum % 60
+    Sum = "총 누적시간 = " + str(hour).zfill(2)+":"+str(minute).zfill(2)+":"+str(second).zfill(2)
+
+    sumtime = tk.Label(recwin, text = Sum)
+    sumtime.config(width = 20, height =1)
+    sumtime.config(font = '맑은고딕 30')
+    sumtime.config(bg = 'brown3')
+    sumtime.place(x = 0, y = 0)
+
+   
+    frame = tk.Frame(recwin)
+    frame.place(x = 0, y = 50)
+
+    listNodes = tk.Listbox(frame, width = 40, height = 12, font = '맑은고딕 12')
+    listNodes.pack(side = "left", fill = "y")
+
+    scrollbar = tk.Scrollbar(frame, orient = "vertical")
+    scrollbar.config(command = listNodes.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    listNodes.config(yscrollcommand = scrollbar.set)
+
+    i = 1
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\timerecord.txt", 'r')
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        listNodes.insert(i, line)
+        i += 1
+    f.close()
+
+    recwin.mainloop()
+ 
+
+def Save():
+    global runningtime
+    global Runningtime
+
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\timerecord.txt", 'a')
+    f.write(time.strftime('%Y-%m-%d', time.localtime(time.time())))
+    f.write("-")
+    f.write(Runningtime)
+    f.write("\n")
+    f.close()   
+
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'r')
+    Sum = f.readlines()[-1]
+    f.close()
+
+    NewSum = str(int(Sum) + int(runningtime))
+    f = open("C:\\Users\\YeonUk\\Desktop\\the rule of 10000 hours\\TimeSum.txt", 'a')
+    f.write("\n")
+    f.write(NewSum)
+    f.close()
+
+    Initial()
+
+running = 0
+runningtime = 0
+
+window = tk.Tk()
+window.title("The Rule of 10000 Hours")
+window.geometry("500x300+1190+10")
+window.config(bg = 'light cyan')
+window.resizable(False, False)
+
+today = tk.Label(window, text = time.strftime('%Y-%m-%d', time.localtime(time.time())))
+today.config(width = 13, height = 2)
+today.config(font = '맑은고딕 10')
+today.config(bg = 'powderblue')
+today.place(x = 0, y = 0)
+
+name = tk.Label(window, text = "1만 시간의 법칙")
+name.config(width = 15, height = 2)
+name.config(font = '맑은고딕 20')
+name.config(bg = 'light cyan')
+name.place(x = 130, y = 60)
+
+timer = tk.Label(window, text = "00:00:00")
+timer.config(width = 10, height =1)
+timer.config(font = '맑은고딕 40')
+timer.config(bg = 'steelblue')
+timer.place(x = 90, y = 110)
+
+action = 'start'
+action_button = tk.Button(window, width = 15, command = Action, text = action)
+action_button.config(width = 10, height = 3)
+action_button.config(font = '맑은고딕 13')
+action_button.config(bg = 'skyblue3')
+action_button.place(x = 150, y = 170)
+
+initial_button = tk.Button(window, width = 15, command = Initial, text = "inital")
+initial_button.config(width = 10, height = 3)
+initial_button.config(font = '맑은고딕 13')
+initial_button.config(bg = 'skyblue3')
+initial_button.place(x = 250, y = 170)
+
+record = "record"
+record_button = tk.Button(window, width = 15, command = Record, text = record)
+record_button.config(width = 21, height = 1)
+record_button.config(font = '맑은고딕 13')
+record_button.config(bg = 'skyblue3')
+record_button.place(x = 151, y = 235)
+
+window.mainloop()
+
